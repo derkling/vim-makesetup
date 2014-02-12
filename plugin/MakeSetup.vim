@@ -31,25 +31,37 @@ endfunction
 
 " Set Makefile
 function! SetMakeMakefile()
-	let s:parent_makefile = findfile('Makefile', '.;')
-	echom 'Parent Makefile path: '.s:parent_makefile
-	let w:make_makefile = input('Enter Makefile path: ', s:parent_makefile, 'file')
+  if exists('w:make_makefile')
+    let l:parent_makefile = w:make_makefile
+  else
+    let l:parent_makefile = findfile('Makefile', '.;')
+    echom 'Parent Makefile path: '.l:parent_makefile
+  endif
+	let w:make_makefile = input('Enter Makefile path: ', l:parent_makefile, 'file')
 	redraw | echo 'Using Makefile [' . w:make_makefile . ']'
 	let w:make_folder = substitute(w:make_makefile, '/Makefile', '', '')
-	echom 'Makefile folder: ' . w:make_folder
+	echom 'Makefile folder: '.w:make_folder
   call UpdateMakeCommand()
 endfunction
 
 " Set Makefile target
 function! SetMakeTarget()
-	let w:make_target = input('Enter Makefile target: ', 'all', 'file')
+  let l:make_target = 'all'
+  if exists('w:make_target')
+    let l:make_target = w:make_target
+  endif
+	let w:make_target = input('Enter Makefile target: ', l:make_target, 'file')
 	redraw | echo 'Makefile target set to [' . w:make_target . ']'
   call UpdateMakeCommand()
 endfunction
 
 " Set Make command
 function! SetMakeCommand()
-	let w:make_command = input('Enter Make command: ', 'make')
+  let l:make_command = 'make'
+  if exists('w:make_command')
+    let l:make_command = w:make_command
+  endif
+	let w:make_command = input('Enter Make command: ', l:make_command)
 	redraw | echo 'Make command set to [' . w:make_command . ']'
   call UpdateMakeCommand()
 endfunction
