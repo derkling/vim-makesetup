@@ -19,6 +19,16 @@ if &cp || v:version < 702 || (exists('g:loaded_make_parent') && g:loaded_make_pa
 endif
 let g:loaded_make_parent = 1
 
+" Update Make command
+function! UpdateMakeCommand()
+	if ! exists('w:make_command')
+    return
+  endif
+	let l:command_line = w:make_command . ' -C ' . w:make_folder . ' ' . w:make_target
+	let &makeprg = l:command_line
+	echom 'Make command line set to: ' . l:command_line
+endfunction
+
 " Set Makefile
 function! SetMakeMakefile()
 	let s:parent_makefile = findfile('Makefile', '.;')
@@ -27,21 +37,21 @@ function! SetMakeMakefile()
 	redraw | echo 'Using Makefile [' . w:make_makefile . ']'
 	let w:make_folder = substitute(w:make_makefile, '/Makefile', '', '')
 	echom 'Makefile folder: ' . w:make_folder
+  call UpdateMakeCommand()
 endfunction
 
 " Set Makefile target
 function! SetMakeTarget()
 	let w:make_target = input('Enter Makefile target: ', 'all', 'file')
 	redraw | echo 'Makefile target set to [' . w:make_target . ']'
+  call UpdateMakeCommand()
 endfunction
 
 " Set Make command
 function! SetMakeCommand()
 	let w:make_command = input('Enter Make command: ', 'make')
 	redraw | echo 'Make command set to [' . w:make_command . ']'
-	let l:command_line = w:make_command . ' -C ' . w:make_folder . ' ' . w:make_target
-	let &makeprg = l:command_line
-	echom 'Make command line set to: ' . l:command_line
+  call UpdateMakeCommand()
 endfunction
 
 " Run Make using configured Makefile and target
